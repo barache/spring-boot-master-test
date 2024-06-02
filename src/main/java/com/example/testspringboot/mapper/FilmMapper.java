@@ -6,8 +6,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.Optional;
-
 @Mapper(uses = ActeurMapper.class)
 public interface FilmMapper {
     FilmMapper INSTANCE = Mappers.getMapper(FilmMapper.class);

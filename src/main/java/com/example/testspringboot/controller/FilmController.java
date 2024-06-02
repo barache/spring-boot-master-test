@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -19,13 +18,11 @@ public class FilmController {
 
     private final FilmService filmService;
 
-
     @GetMapping("{id}")
     public ResponseEntity<FilmDto>  getFilm(@PathVariable(value = "id") Long id)
             throws ResourceNotFoundException {
         return ResponseEntity.ok(filmService.getFilm(id));
     }
-
 
     @PostMapping
     public ResponseEntity<Film> createFilm(@RequestBody Film film) {
@@ -38,14 +35,5 @@ public class FilmController {
         return ResponseEntity.ok(filmService.getAllFilm());
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> deleteFilm(@PathVariable("id") long id) {
-        try {
-            filmService.deleteFilm(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
 }

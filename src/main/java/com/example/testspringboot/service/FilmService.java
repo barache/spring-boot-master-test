@@ -33,14 +33,8 @@ public class FilmService {
         return film;
     }
 
-
     public List<Film> getAllFilm() {
         return filmRepository.findAll();
     }
 
-    public void deleteFilm(long id) {
-        Film film = filmRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND, id)));
-        filmRepository.delete(film);
-    }
 }
