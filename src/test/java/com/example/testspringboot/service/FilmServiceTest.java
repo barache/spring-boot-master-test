@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -82,7 +83,7 @@ public class FilmServiceTest {
         assertEquals(1, result.getId());
         assertEquals(Constants.TITRE, result.getTitre());
         assertEquals(Constants.DESCRIPTION, result.getDescription());
-        assertEquals(result.getActeurs().size(), 2);
+        assertEquals(2, result.getActeurs().size() );
 
         Mockito.verify(filmRepository, Mockito.times(1)).save(film);
     }
@@ -102,9 +103,22 @@ public class FilmServiceTest {
         assertEquals(1, result.getId());
         assertEquals(Constants.TITRE, result.getTitre());
         assertEquals(Constants.DESCRIPTION, result.getDescription());
-        assertEquals(result.getActeurs().size(), 2);
+        assertEquals(2,result.getActeurs().size());
 
         Mockito.verify(filmRepository, Mockito.times(1)).findById(id);
     }
+
+    @Test
+    public void getAllFilmTest() {
+
+        Mockito.when(filmRepository.findAll()).thenReturn(Arrays.asList(film));
+
+        List<Film> result = filmService.getAllFilm();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        Mockito.verify(filmRepository, Mockito.times(1)).findAll();
+    }
+
 
 }

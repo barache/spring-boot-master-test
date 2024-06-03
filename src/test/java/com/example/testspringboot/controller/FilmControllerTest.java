@@ -1,11 +1,15 @@
 package com.example.testspringboot.controller;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.Arrays;
+import java.util.List;
+
 import com.example.testspringboot.Utils.Constants;
 import com.example.testspringboot.dto.FilmDto;
 import com.example.testspringboot.entity.Acteur;
@@ -32,27 +36,27 @@ class FilmControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    Film film =
+            Film.builder()
+                    .id(1L)
+                    .titre(Constants.TITRE)
+                    .description(Constants.DESCRIPTION)
+                    .acteurs(Arrays.asList(
+                            Acteur.builder()
+                                    .id(1L)
+                                    .nom(Constants.NOM_ACTEUR_1)
+                                    .prenom(Constants.PRENOM_ACTEUR_1)
+                                    .build(),
+                            Acteur.builder()
+                                    .id(2L)
+                                    .nom(Constants.NOM_ACTEUR_2)
+                                    .prenom(Constants.PRENOM_ACTEUR_2)
+                                    .build()
+                    ))
+                    .build();
+
     @Test
     void createFilmTestReturnStatusIsCreated() throws Exception {
-
-        Film film =
-                Film.builder()
-                        .id(1L)
-                        .titre(Constants.TITRE)
-                        .description(Constants.DESCRIPTION)
-                        .acteurs(Arrays.asList(
-                                Acteur.builder()
-                                        .id(1L)
-                                        .nom(Constants.NOM_ACTEUR_1)
-                                        .prenom(Constants.PRENOM_ACTEUR_1)
-                                        .build(),
-                                Acteur.builder()
-                                        .id(2L)
-                                        .nom(Constants.NOM_ACTEUR_2)
-                                        .prenom(Constants.PRENOM_ACTEUR_2)
-                                        .build()
-                        ))
-                        .build();
 
         mockMvc.perform(post("/api/film/").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(film)))
@@ -90,6 +94,19 @@ class FilmControllerTest {
                 .andExpect(jsonPath("$.titre").value(filmDto.getTitre()))
                 .andExpect(jsonPath("$.description").value(filmDto.getDescription()))
                 .andDo(print());
+    }
+
+    @Test
+    void returnAllFilm() throws Exception {
+
+        when(filmService.getAllFilm()).thenReturn(Arrays.asList(film));
+
+        List<Film> result = filmService.getAllFilm();
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+
+        mockMvc.perform(get("/api/film/")).andExpect(status().isOk());
     }
 
 }

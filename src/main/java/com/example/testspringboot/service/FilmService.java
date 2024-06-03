@@ -6,6 +6,7 @@ import com.example.testspringboot.exception.ResourceNotFoundException;
 import com.example.testspringboot.mapper.FilmMapper;
 import com.example.testspringboot.repository.FilmRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +25,7 @@ public class FilmService {
         Film film = filmRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND, id)));
 
-        FilmDto filmDto = filmMapper.filmToFilmDTO(film);
-        return filmDto;
+        return filmMapper.filmToFilmDTO(film);
     }
 
     public Film createFilm(Film film) {
@@ -35,6 +35,19 @@ public class FilmService {
 
     public List<Film> getAllFilm() {
         return filmRepository.findAll();
+    }
+
+    public void deleteFilm(Long id) {
+        filmRepository.deleteById(id);
+    }
+
+    public Film updateFilm(Long id, Film updatedFilm) {
+
+        Film existingFilm = filmRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(NOT_FOUND, id)));
+
+        BeanUtils.copyProperties(updatedFilm, existingFilm, "id");
+        return filmRepository.save(existingFilm);
     }
 
 }
