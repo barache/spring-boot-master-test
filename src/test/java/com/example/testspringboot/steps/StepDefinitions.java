@@ -2,7 +2,6 @@ package com.example.testspringboot.steps;
 
 import com.example.testspringboot.config.TestConfig;
 import com.example.testspringboot.entity.Acteur;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -30,9 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class StepDefinitions {
 
     private Response response;
-    private String POST_FILM_ENDPOINT = "http://localhost:8080/api/film/";
-    private String GET_FILM_ENDPOINT = "http://localhost:8080/api/film/1";
-    private String DELETE_FILM_ENDPOINT = "http://localhost:8080/api/film/1";
+    private final String POST_FILM_ENDPOINT = "http://localhost:8080/api/film/";
+    private final String GET_FILM_ENDPOINT = "http://localhost:8080/api/film/1";
+    private final String DELETE_FILM_ENDPOINT = "http://localhost:8080/api/film/1";
     private String requestBody;
 
     @Given("I set the POST film service api endpoint")
@@ -55,7 +54,7 @@ public class StepDefinitions {
     }
 
     @Then("I receive valid HTTP response code 201")
-    public void i_receive_valid_http_response_code_201() throws JsonProcessingException {
+    public void i_receive_valid_http_response_code_201() {
        assertEquals(201, response.getStatusCode());
     }
 
