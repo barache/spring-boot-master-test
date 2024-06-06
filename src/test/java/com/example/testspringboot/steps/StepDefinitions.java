@@ -18,6 +18,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Log4j2
@@ -31,8 +32,23 @@ public class StepDefinitions {
     private Response response;
     private final String POST_FILM_ENDPOINT = "http://localhost:8080/api/film/";
     private final String GET_FILM_ENDPOINT = "http://localhost:8080/api/film/1";
+
+    private final String PUT_FILM_ENDPOINT = "http://localhost:8080/api/film/1";
     private final String DELETE_FILM_ENDPOINT = "http://localhost:8080/api/film/1";
     private String requestBody;
+
+    private final String FILM_DETAIL = "{\"titre\":\"Star Wars: The Empire Strikes Back\"," +
+            "\"description\":\"Darth Vader is adamant about turning Luke Skywalker to the dark side.\"," +
+            "\"acteurs\":[{\"nom\":\"Hamill\",\"prenom\":\"Mark\"}," +
+            "{\"nom\":\"Ford\",\"prenom\":\"Harrison\"}," +
+            "{\"nom\":\"Fisher(\",\"prenom\":\"Carrie\"}]}";
+
+    private final String FILM_UPDATE_DETAIL = "{\"id\":1,\"titre\":\"Star Wars: Episode IV - A New Hope\"," +
+            "\"description\":\"Luke Skywalker joins forces with a Jedi Knight, a cocky pilot.\"," +
+            "\"acteurs\":[{\"id\":1,\"nom\":\"Hamill\",\"prenom\":\"Mark\"}," +
+            "{\"id\":2,\"nom\":\"Ford\",\"prenom\":\"Harrison\"}," +
+            "{\"id\":3,\"nom\":\"Fisher(\",\"prenom\":\"Carrie\"}]}";
+
 
     @Given("I set the POST film service api endpoint")
     public void i_set_the_post_film_service_api_endpoint() {
@@ -41,7 +57,7 @@ public class StepDefinitions {
 
     @Given("I set request body")
     public void i_set_request_body() {
-        requestBody = "{\"titre\":\"Star Wars: The Empire Strikes Back\",\"description\":\"Darth Vader is adamant about turning Luke Skywalker to the dark side.\",\"acteurs\":[{\"nom\":\"Hamill\",\"prenom\":\"Mark\"},{\"nom\":\"Ford\",\"prenom\":\"Harrison\"},{\"nom\":\"Fisher(\",\"prenom\":\"Carrie\"}]}";
+        requestBody = FILM_DETAIL;
     }
 
     @When("I send the POST HTTP request")
@@ -82,24 +98,54 @@ public class StepDefinitions {
 
     @Then("I receive film details in the response")
     public void i_receive_film_details_in_the_response() {
-
         JsonPath jsonPath = response.jsonPath();
         String titre = jsonPath.getString("titre");
         String description = jsonPath.getString("description");
         List<Acteur> acteurList = jsonPath.getList("acteurs");
 
-        assertEquals("Star Wars: The Empire Strikes Back", titre);
-        assertEquals("Darth Vader is adamant about turning Luke Skywalker to the dark side.",
-                description);
+        assertAll(
+                () -> assertEquals("Star Wars: The Empire Strikes Back", titre),
+                () -> assertEquals("Darth Vader is adamant about turning Luke Skywalker to the dark side.",
+                        description),
+                () -> assertEquals(3, acteurList.size())
+        );
+    }
 
-        assertEquals(3, acteurList.size());
+    @Given("I set the PUT film service api endpoint")
+    public void i_set_the_put_film_service_api_endpoint() {
+        requestBody = FILM_UPDATE_DETAIL;
+    }
+    @When("I send the PUT HTTP request")
+    public void i_send_the_put_http_request() {
+        response = given()
+                .header("Content-Type", "application/json")
+                .body(requestBody)
+                .when()
+                .put(PUT_FILM_ENDPOINT);
+    }
+
+    @Then("I receive film details updated in the response")
+    public void i_receive_film_details_updated_in_the_response() {
+        response.then().statusCode(200);
+        JsonPath jsonPath = response.jsonPath();
+        String titre = jsonPath.getString("titre");
+        String description = jsonPath.getString("description");
+        List<Acteur> acteurList = jsonPath.getList("acteurs");
+
+        assertAll(
+                () -> assertEquals("Star Wars: Episode IV - A New Hope", titre),
+                () -> assertEquals("Luke Skywalker joins forces with a Jedi Knight, a cocky pilot.",
+                        description),
+                () -> assertEquals(3, acteurList.size())
+        );
 
     }
+
 
     @Given("I set the DELETE film service api endpoint")
     public void i_set_the_delete_film_service_api_endpoint() {
-        // Write code here that turns the phrase above into concrete actions
     }
+
     @When("I send the DELETE HTTP request")
     public void i_send_the_delete_http_request() {
         response = given()
