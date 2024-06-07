@@ -1,8 +1,7 @@
 Feature: API Testing with Cucumber
 
   Scenario: POST Request to create a new film
-    Given I set the POST film service api endpoint
-    And I set request body
+    Given I set request body
     When I send the POST HTTP request
     Then I receive valid HTTP response code 201
 

@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -50,11 +49,6 @@ public class StepDefinitions {
             "{\"id\":3,\"nom\":\"Fisher(\",\"prenom\":\"Carrie\"}]}";
 
 
-    @Given("I set the POST film service api endpoint")
-    public void i_set_the_post_film_service_api_endpoint() {
-        // The endpoint is already set as a class variable
-    }
-
     @Given("I set request body")
     public void i_set_request_body() {
         requestBody = FILM_DETAIL;
@@ -76,9 +70,19 @@ public class StepDefinitions {
 
     @Then("I receive valid film details in the response")
     public void i_receive_valid_film_details_in_the_response() {
-        response.then().body("titre", equalTo("Star Wars: The Empire Strikes Back"));
-        response.then().body("description",
-                equalTo("Darth Vader is adamant about turning Luke Skywalker to the dark side."));
+
+        JsonPath jsonPath = response.jsonPath();
+        String titre = jsonPath.getString("titre");
+        String description = jsonPath.getString("description");
+        List<Acteur> acteurList = jsonPath.getList("acteurs");
+
+        assertAll(
+                "Grouped Assertions of Film",
+                () -> assertEquals("Star Wars: The Empire Strikes Back", titre),
+                () -> assertEquals("Darth Vader is adamant about turning Luke Skywalker to the dark side.",
+                        description),
+                () -> assertEquals(3, acteurList.size())
+        );
     }
 
     @Given("I set the GET film service api endpoint")
@@ -104,6 +108,7 @@ public class StepDefinitions {
         List<Acteur> acteurList = jsonPath.getList("acteurs");
 
         assertAll(
+                "Grouped Assertions of Film",
                 () -> assertEquals("Star Wars: The Empire Strikes Back", titre),
                 () -> assertEquals("Darth Vader is adamant about turning Luke Skywalker to the dark side.",
                         description),
@@ -133,6 +138,7 @@ public class StepDefinitions {
         List<Acteur> acteurList = jsonPath.getList("acteurs");
 
         assertAll(
+                "Grouped Assertions of Film",
                 () -> assertEquals("Star Wars: Episode IV - A New Hope", titre),
                 () -> assertEquals("Luke Skywalker joins forces with a Jedi Knight, a cocky pilot.",
                         description),
