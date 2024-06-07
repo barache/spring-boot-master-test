@@ -1,20 +1,16 @@
 {
-  "id": 1,
   "titre": "Star Wars: The Empire Strikes Back",
   "description": "Darth Vader is adamant about turning Luke Skywalker to the dark side.",
   "acteurs": [
     {
-      "id": 1,
       "nom": "Hamill",
       "prenom": "Mark"
     },
     {
-      "id": 2,
       "nom": "Ford",
       "prenom": "Harrison"
     },
     {
-      "id": 3,
       "nom": "Fisher(",
       "prenom": "Carrie"
     }

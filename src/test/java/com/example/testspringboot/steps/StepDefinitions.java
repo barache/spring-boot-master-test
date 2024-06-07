@@ -1,5 +1,6 @@
 package com.example.testspringboot.steps;
 
+import com.example.testspringboot.Utils.Constants;
 import com.example.testspringboot.config.TestConfig;
 import com.example.testspringboot.entity.Acteur;
 import io.cucumber.java.en.Given;
@@ -78,9 +79,8 @@ public class StepDefinitions {
 
         assertAll(
                 "Grouped Assertions of Film",
-                () -> assertEquals("Star Wars: The Empire Strikes Back", titre),
-                () -> assertEquals("Darth Vader is adamant about turning Luke Skywalker to the dark side.",
-                        description),
+                () -> assertEquals(Constants.TITRE, titre),
+                () -> assertEquals(Constants.DESCRIPTION, description),
                 () -> assertEquals(3, acteurList.size())
         );
     }
@@ -109,9 +109,8 @@ public class StepDefinitions {
 
         assertAll(
                 "Grouped Assertions of Film",
-                () -> assertEquals("Star Wars: The Empire Strikes Back", titre),
-                () -> assertEquals("Darth Vader is adamant about turning Luke Skywalker to the dark side.",
-                        description),
+                () -> assertEquals(Constants.TITRE, titre),
+                () -> assertEquals(Constants.DESCRIPTION, description),
                 () -> assertEquals(3, acteurList.size())
         );
     }
@@ -139,9 +138,8 @@ public class StepDefinitions {
 
         assertAll(
                 "Grouped Assertions of Film",
-                () -> assertEquals("Star Wars: Episode IV - A New Hope", titre),
-                () -> assertEquals("Luke Skywalker joins forces with a Jedi Knight, a cocky pilot.",
-                        description),
+                () -> assertEquals(Constants.NEW_TITRE, titre),
+                () -> assertEquals(Constants.NEW_DESCRIPTION, description),
                 () -> assertEquals(3, acteurList.size())
         );
 
